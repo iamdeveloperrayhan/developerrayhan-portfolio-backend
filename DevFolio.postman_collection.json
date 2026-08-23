@@ -1,0 +1,193 @@
+{
+  "info": {
+    "name": "DevFolio API",
+    "description": "Complete API collection for the DevFolio portfolio + blog backend.\n\n## Setup\n1. Run the backend: `python manage.py runserver` (defaults to http://127.0.0.1:8000).\n2. Seed data: `python manage.py seed_demo`.\n3. Run **Auth > Login (owner)** first — it auto-saves `access_token` and `refresh_token` into collection variables, so every owner-only request is authorized automatically.\n\n## Variables\n- `base_url` — API root, default `http://127.0.0.1:8000/api`\n- `access_token` / `refresh_token` — set automatically by Login\n- `visitor_id` — a random UUID used for anonymous likes (X-Visitor-Id header)\n\n## Notes\n- There is **no registration endpoint** (single-owner site). POSTing /auth/register/ returns 404 by design.\n- Public reads need no auth. All writes to portfolio/blog content require the owner's bearer token.\n- Posting a comment or a contact message is public but throttled.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000/api" },
+    { "key": "access_token", "value": "" },
+    { "key": "refresh_token", "value": "" },
+    { "key": "visitor_id", "value": "11111111-2222-3333-4444-555555555555" },
+    { "key": "owner_username", "value": "owner" },
+    { "key": "owner_password", "value": "DevFolioDemo!2026" },
+    { "key": "post_slug", "value": "how-i-set-up-jwt-authentication-in-django-rest-framework" },
+    { "key": "project_slug", "value": "devfolio-portfolio-blog-platform" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (owner)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.access) { pm.collectionVariables.set('access_token', json.access); }",
+                  "if (json.refresh) { pm.collectionVariables.set('refresh_token', json.refresh); }",
+                  "pm.test('login returns tokens', () => pm.expect(json.access).to.be.a('string'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/login/", "host": ["{{base_url}}"], "path": ["auth", "login", ""] },
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{owner_username}}\",\n  \"password\": \"{{owner_password}}\"\n}" }
+          }
+        },
+        {
+          "name": "Refresh token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/refresh/", "host": ["{{base_url}}"], "path": ["auth", "refresh", ""] },
+            "body": { "mode": "raw", "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}" }
+          }
+        },
+        {
+          "name": "Me (current owner)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/auth/me/", "host": ["{{base_url}}"], "path": ["auth", "me", ""] }
+          }
+        },
+        {
+          "name": "Change password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/auth/change-password/", "host": ["{{base_url}}"], "path": ["auth", "change-password", ""] },
+            "body": { "mode": "raw", "raw": "{\n  \"old_password\": \"DevFolioDemo!2026\",\n  \"new_password\": \"NewStrongPass!2026\"\n}" }
+          }
+        },
+        {
+          "name": "Logout (blacklist refresh)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/auth/logout/", "host": ["{{base_url}}"], "path": ["auth", "logout", ""] },
+            "body": { "mode": "raw", "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}" }
+          }
+        },
+        {
+          "name": "Register (should 404 — no registration)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/register/", "host": ["{{base_url}}"], "path": ["auth", "register", ""] },
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"hacker\",\n  \"password\": \"x\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get profile (public)",
+          "request": { "method": "GET", "url": { "raw": "{{base_url}}/profile/", "host": ["{{base_url}}"], "path": ["profile", ""] } }
+        },
+        {
+          "name": "Update profile (owner)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/profile/", "host": ["{{base_url}}"], "path": ["profile", ""] },
+            "body": { "mode": "raw", "raw": "{\n  \"headline\": \"Full-Stack Developer — React & Django REST\",\n  \"is_available_for_hire\": true\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Skills",
+      "item": [
+        { "name": "List skills (public)", "request": { "method": "GET", "url": { "raw": "{{base_url}}/skills/?category=FRONTEND&is_featured=true", "host": ["{{base_url}}"], "path": ["skills", ""], "query": [{ "key": "category", "value": "FRONTEND" }, { "key": "is_featured", "value": "true" }] } } },
+        { "name": "Create skill (owner)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/skills/", "host": ["{{base_url}}"], "path": ["skills", ""] }, "body": { "mode": "raw", "raw": "{\n  \"name\": \"GraphQL\",\n  \"category\": \"BACKEND\",\n  \"proficiency\": 70,\n  \"icon\": \"graphql\",\n  \"is_featured\": false\n}" } } },
+        { "name": "Update skill (owner)", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/skills/1/", "host": ["{{base_url}}"], "path": ["skills", "1", ""] }, "body": { "mode": "raw", "raw": "{\n  \"proficiency\": 95\n}" } } },
+        { "name": "Delete skill (owner)", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/skills/1/", "host": ["{{base_url}}"], "path": ["skills", "1", ""] } } }
+      ]
+    },
+    {
+      "name": "Experience",
+      "item": [
+        { "name": "List experiences (public)", "request": { "method": "GET", "url": { "raw": "{{base_url}}/experiences/", "host": ["{{base_url}}"], "path": ["experiences", ""] } } },
+        { "name": "Create experience (owner)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/experiences/", "host": ["{{base_url}}"], "path": ["experiences", ""] }, "body": { "mode": "raw", "raw": "{\n  \"company\": \"Acme Corp\",\n  \"role\": \"Backend Engineer\",\n  \"employment_type\": \"FULL_TIME\",\n  \"location\": \"Remote\",\n  \"start_date\": \"2022-01-01\",\n  \"is_current\": false,\n  \"end_date\": \"2023-06-01\",\n  \"description\": \"Built internal APIs.\"\n}" } } }
+      ]
+    },
+    {
+      "name": "Education",
+      "item": [
+        { "name": "List education (public)", "request": { "method": "GET", "url": { "raw": "{{base_url}}/education/", "host": ["{{base_url}}"], "path": ["education", ""] } } },
+        { "name": "Create education (owner)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/education/", "host": ["{{base_url}}"], "path": ["education", ""] }, "body": { "mode": "raw", "raw": "{\n  \"institution\": \"MIT\",\n  \"degree\": \"M.Sc.\",\n  \"field_of_study\": \"CS\",\n  \"start_year\": 2020,\n  \"end_year\": 2022\n}" } } }
+      ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        { "name": "List projects (public, filter)", "request": { "method": "GET", "url": { "raw": "{{base_url}}/projects/?category=WEB&is_featured=true", "host": ["{{base_url}}"], "path": ["projects", ""], "query": [{ "key": "category", "value": "WEB" }, { "key": "is_featured", "value": "true" }] } } },
+        { "name": "Get project by slug (public)", "request": { "method": "GET", "url": { "raw": "{{base_url}}/projects/{{project_slug}}/", "host": ["{{base_url}}"], "path": ["projects", "{{project_slug}}", ""] } } },
+        { "name": "Create project (owner)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/projects/", "host": ["{{base_url}}"], "path": ["projects", ""] }, "body": { "mode": "raw", "raw": "{\n  \"title\": \"New Project\",\n  \"summary\": \"A short summary of the project.\",\n  \"description\": \"Longer description.\",\n  \"category\": \"WEB\",\n  \"github_url\": \"https://github.com/x/y\",\n  \"tech_stack_ids\": [1, 2]\n}" } } },
+        { "name": "Delete project (owner)", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/projects/{{project_slug}}/", "host": ["{{base_url}}"], "path": ["projects", "{{project_slug}}", ""] } } }
+      ]
+    },
+    {
+      "name": "Blog — Categories & Tags",
+      "item": [
+        { "name": "List categories (public)", "request": { "method": "GET", "url": { "raw": "{{base_url}}/categories/", "host": ["{{base_url}}"], "path": ["categories", ""] } } },
+        { "name": "List tags (public)", "request": { "method": "GET", "url": { "raw": "{{base_url}}/tags/", "host": ["{{base_url}}"], "path": ["tags", ""] } } },
+        { "name": "Create category (owner)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/categories/", "host": ["{{base_url}}"], "path": ["categories", ""] }, "body": { "mode": "raw", "raw": "{\n  \"name\": \"DevOps\",\n  \"description\": \"CI/CD and infrastructure.\"\n}" } } }
+      ]
+    },
+    {
+      "name": "Blog — Posts",
+      "item": [
+        { "name": "List posts (public, published only)", "request": { "method": "GET", "url": { "raw": "{{base_url}}/posts/?search=jwt&category=django", "host": ["{{base_url}}"], "path": ["posts", ""], "query": [{ "key": "search", "value": "jwt" }, { "key": "category", "value": "django" }] } } },
+        { "name": "List drafts (owner)", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/posts/?status=DRAFT", "host": ["{{base_url}}"], "path": ["posts", ""], "query": [{ "key": "status", "value": "DRAFT" }] } } },
+        { "name": "Get post by slug (public)", "event": [{ "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["pm.request.headers.add({key:'X-Visitor-Id', value: pm.collectionVariables.get('visitor_id')});"] } }], "request": { "method": "GET", "url": { "raw": "{{base_url}}/posts/{{post_slug}}/", "host": ["{{base_url}}"], "path": ["posts", "{{post_slug}}", ""] } } },
+        { "name": "Create post (owner)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/posts/", "host": ["{{base_url}}"], "path": ["posts", ""] }, "body": { "mode": "raw", "raw": "{\n  \"title\": \"My new blog post about testing\",\n  \"excerpt\": \"Short teaser.\",\n  \"content\": \"Full content of the post, at least one hundred characters long so that it passes the publish validation rule easily here.\",\n  \"category_id\": 1,\n  \"tag_ids\": [1, 2],\n  \"status\": \"PUBLISHED\"\n}" } } },
+        { "name": "Update post (owner)", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/posts/{{post_slug}}/", "host": ["{{base_url}}"], "path": ["posts", "{{post_slug}}", ""] }, "body": { "mode": "raw", "raw": "{\n  \"is_featured\": true\n}" } } },
+        { "name": "Like post (public, toggle)", "request": { "method": "POST", "header": [{ "key": "X-Visitor-Id", "value": "{{visitor_id}}" }], "url": { "raw": "{{base_url}}/posts/{{post_slug}}/like/", "host": ["{{base_url}}"], "path": ["posts", "{{post_slug}}", "like", ""] } } },
+        { "name": "List comments on post (public, approved)", "request": { "method": "GET", "url": { "raw": "{{base_url}}/posts/{{post_slug}}/comments/", "host": ["{{base_url}}"], "path": ["posts", "{{post_slug}}", "comments", ""] } } },
+        { "name": "Add comment (public, held for moderation)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": { "raw": "{{base_url}}/posts/{{post_slug}}/comments/", "host": ["{{base_url}}"], "path": ["posts", "{{post_slug}}", "comments", ""] }, "body": { "mode": "raw", "raw": "{\n  \"name\": \"Jane Reader\",\n  \"email\": \"jane@example.com\",\n  \"content\": \"Really enjoyed this, thanks for writing it up!\"\n}" } } }
+      ]
+    },
+    {
+      "name": "Comment Moderation (owner)",
+      "item": [
+        { "name": "List all comments (owner)", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/comments/?is_approved=false", "host": ["{{base_url}}"], "path": ["comments", ""], "query": [{ "key": "is_approved", "value": "false" }] } } },
+        { "name": "Approve comment (owner)", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/comments/1/", "host": ["{{base_url}}"], "path": ["comments", "1", ""] }, "body": { "mode": "raw", "raw": "{\n  \"is_approved\": true\n}" } } },
+        { "name": "Delete comment (owner)", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/comments/1/", "host": ["{{base_url}}"], "path": ["comments", "1", ""] } } }
+      ]
+    },
+    {
+      "name": "Contact",
+      "item": [
+        { "name": "Send message (public)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": { "raw": "{{base_url}}/contact/", "host": ["{{base_url}}"], "path": ["contact", ""] }, "body": { "mode": "raw", "raw": "{\n  \"name\": \"Potential Client\",\n  \"email\": \"client@example.com\",\n  \"subject\": \"Project inquiry\",\n  \"message\": \"Hi, we would love to work with you on an upcoming project.\"\n}" } } },
+        { "name": "List messages (owner)", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/contact/?is_read=false", "host": ["{{base_url}}"], "path": ["contact", ""], "query": [{ "key": "is_read", "value": "false" }] } } },
+        { "name": "Mark message read (owner)", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/contact/1/", "host": ["{{base_url}}"], "path": ["contact", "1", ""] }, "body": { "mode": "raw", "raw": "{\n  \"is_read\": true\n}" } } }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        { "name": "Stats (owner)", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }], "url": { "raw": "{{base_url}}/dashboard/stats/", "host": ["{{base_url}}"], "path": ["dashboard", "stats", ""] } } }
+      ]
+    }
+  ]
+}
