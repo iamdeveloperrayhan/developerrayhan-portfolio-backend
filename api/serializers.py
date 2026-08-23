@@ -15,7 +15,6 @@ from .models import (
     ContactMessage,
     Education,
     Experience,
-    PostLike,
     Post,
     Profile,
     Project,
@@ -30,7 +29,7 @@ from .models import (
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "email", "is_superuser"]
+        fields = ("id", "username", "email", "is_superuser")
 
 
 class LoginSerializer(TokenObtainPairSerializer):
@@ -59,12 +58,12 @@ class ChangePasswordSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = [
+        fields = (
             "id", "full_name", "headline", "bio", "email", "phone", "location",
             "avatar", "resume", "github_url", "linkedin_url", "x_url",
             "website_url", "years_of_experience", "is_available_for_hire",
             "created_at", "updated_at",
-        ]
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -73,10 +72,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
-        fields = [
+        fields = (
             "id", "name", "category", "proficiency", "icon", "icon_image",
             "display_order", "is_featured", "created_at", "updated_at",
-        ]
+        )
 
     def validate_proficiency(self, value):
         if not 1 <= value <= 100:
@@ -87,7 +86,7 @@ class SkillSerializer(serializers.ModelSerializer):
 class SkillMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
-        fields = ["id", "name", "category", "icon", "icon_image"]
+        fields = ("id", "name", "category", "icon", "icon_image")
 
 
 # ---------------------------------------------------------------------------
@@ -96,11 +95,11 @@ class SkillMiniSerializer(serializers.ModelSerializer):
 class ExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Experience
-        fields = [
+        fields = (
             "id", "company", "role", "employment_type", "location",
             "start_date", "end_date", "is_current", "description",
             "company_url", "display_order", "created_at", "updated_at",
-        ]
+        )
 
     def validate(self, attrs):
         # Merge with existing instance values on PATCH.
@@ -137,11 +136,11 @@ class ExperienceSerializer(serializers.ModelSerializer):
 class EducationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Education
-        fields = [
+        fields = (
             "id", "institution", "degree", "field_of_study", "start_year",
             "end_year", "grade", "description", "display_order",
             "created_at", "updated_at",
-        ]
+        )
 
     def validate(self, attrs):
         start = attrs.get("start_year", getattr(self.instance, "start_year", None))
@@ -165,13 +164,13 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = [
+        fields = (
             "id", "title", "slug", "summary", "description", "cover_image",
             "tech_stack", "tech_stack_ids", "category", "live_url",
             "github_url", "is_featured", "completed_date", "display_order",
             "created_at", "updated_at",
-        ]
-        read_only_fields = ["slug"]
+        )
+        read_only_fields = ("slug")
 
     def validate(self, attrs):
         live = attrs.get("live_url", getattr(self.instance, "live_url", ""))
@@ -191,8 +190,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ["id", "name", "slug", "description", "posts_count"]
-        read_only_fields = ["slug"]
+        fields = ("id", "name", "slug", "description", "posts_count")
+        read_only_fields = ("slug")
 
     def get_posts_count(self, obj):
         if hasattr(obj, "published_posts_count"):
@@ -205,8 +204,8 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ["id", "name", "slug", "posts_count"]
-        read_only_fields = ["slug"]
+        fields = ("id", "name", "slug", "posts_count")
+        read_only_fields = ("slug")
 
     def get_posts_count(self, obj):
         if hasattr(obj, "published_posts_count"):
@@ -220,7 +219,7 @@ class TagSerializer(serializers.ModelSerializer):
 class CategoryMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ["id", "name", "slug"]
+        fields = ("id", "name", "slug")
 
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -231,11 +230,11 @@ class PostListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = [
+        fields = (
             "id", "title", "slug", "excerpt", "cover_image", "category",
             "tags", "status", "published_at", "views_count", "reading_time",
             "is_featured", "likes_count", "comments_count", "created_at",
-        ]
+        )
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
@@ -249,13 +248,13 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = [
+        fields = (
             "id", "title", "slug", "excerpt", "content", "cover_image",
             "category", "tags", "author", "status", "published_at",
             "views_count", "reading_time", "is_featured", "likes_count",
             "comments_count", "is_liked", "related_posts",
             "created_at", "updated_at",
-        ]
+        )
 
     def get_likes_count(self, obj):
         return obj.likes.count()
@@ -283,7 +282,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
 class PostRelatedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ["id", "title", "slug", "excerpt", "cover_image", "reading_time"]
+        fields = ("id", "title", "slug", "excerpt", "cover_image", "reading_time")
 
 
 class PostWriteSerializer(serializers.ModelSerializer):
@@ -296,12 +295,12 @@ class PostWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = [
+        fields = (
             "id", "title", "slug", "excerpt", "content", "cover_image",
             "category_id", "tag_ids", "status", "published_at", "views_count",
             "reading_time", "is_featured",
-        ]
-        read_only_fields = ["slug", "published_at", "views_count", "reading_time"]
+        )
+        read_only_fields = ("slug", "published_at", "views_count", "reading_time")
 
     def validate_title(self, value):
         if len(value.strip()) < 5:
@@ -334,7 +333,7 @@ class CommentPublicSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ["id", "name", "website", "content", "parent", "replies", "created_at"]
+        fields = ("id", "name", "website", "content", "parent", "replies", "created_at")
 
     def get_replies(self, obj):
         replies = obj.replies.filter(is_approved=True).order_by("created_at")
@@ -344,13 +343,13 @@ class CommentPublicSerializer(serializers.ModelSerializer):
 class CommentReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ["id", "name", "website", "content", "parent", "created_at"]
+        fields = ("id", "name", "website", "content", "parent", "created_at")
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ["id", "name", "email", "website", "content", "parent"]
+        fields = ("id", "name", "email", "website", "content", "parent")
 
     def validate_name(self, value):
         if len(value.strip()) < 2:
@@ -379,11 +378,11 @@ class CommentModerationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = [
+        fields = (
             "id", "post", "post_title", "post_slug", "name", "email",
             "website", "content", "parent", "is_approved", "created_at",
-        ]
-        read_only_fields = ["post", "name", "email", "website", "content", "parent"]
+        )
+        read_only_fields = ("post", "name", "email", "website", "content", "parent")
 
 
 # ---------------------------------------------------------------------------
@@ -392,7 +391,7 @@ class CommentModerationSerializer(serializers.ModelSerializer):
 class ContactMessageCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactMessage
-        fields = ["id", "name", "email", "subject", "message"]
+        fields = ("id", "name", "email", "subject", "message")
 
     def validate_message(self, value):
         length = len(value.strip())
@@ -406,6 +405,6 @@ class ContactMessageCreateSerializer(serializers.ModelSerializer):
 class ContactMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactMessage
-        fields = [
+        fields = (
             "id", "name", "email", "subject", "message", "is_read", "created_at",
-        ]
+        )

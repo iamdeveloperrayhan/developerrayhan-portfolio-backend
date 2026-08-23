@@ -10,7 +10,7 @@ class SkillFilter(filters.FilterSet):
 
     class Meta:
         model = Skill
-        fields = ["category", "is_featured"]
+        fields = ("category", "is_featured")
 
 
 class ProjectFilter(filters.FilterSet):
@@ -21,7 +21,7 @@ class ProjectFilter(filters.FilterSet):
 
     class Meta:
         model = Project
-        fields = ["category", "is_featured", "tech"]
+        fields = ("category", "is_featured", "tech")
 
     def filter_tech(self, queryset, name, value):
         if value.isdigit():
@@ -36,4 +36,4 @@ class PostFilter(filters.FilterSet):
 
     class Meta:
         model = Post
-        fields = ["category", "tag", "is_featured"]
+        fields = ("category", "tag", "is_featured")

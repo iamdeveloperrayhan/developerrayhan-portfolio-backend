@@ -23,8 +23,8 @@ from api.models import (
     ContactMessage,
     Education,
     Experience,
-    PostLike,
     Post,
+    PostLike,
     Profile,
     Project,
     Skill,
@@ -121,7 +121,7 @@ class Command(BaseCommand):
 
     # ------------------------------------------------------------------
     def _owner(self):
-        owner, created = User.objects.get_or_create(
+        owner, _ = User.objects.get_or_create(
             username=OWNER_USERNAME,
             defaults={"email": OWNER_EMAIL, "is_staff": True, "is_superuser": True},
         )
@@ -149,13 +149,13 @@ class Command(BaseCommand):
                 "schema to the pixel. When I'm not coding I'm usually writing about "
                 "what I learned so the next person hits fewer walls than I did."
             ),
-            email="hello@rayhankabir.dev",
+            email="hello@iamdeveloperrayhan.dev",
             phone="+880 1700 000000",
             location="Dhaka, Bangladesh",
-            github_url="https://github.com/your-username",
-            linkedin_url="https://linkedin.com/in/your-username",
-            x_url="https://x.com/your-username",
-            website_url="https://rayhankabir.dev",
+            github_url="https://github.com/imadeveloperrayhan",
+            linkedin_url="https://linkedin.com/in/iamdeveloperrayhan",
+            x_url="https://x.com/iamdeveloperrayhan",
+            website_url="https://iamdeveloperrayhan.dev",
             years_of_experience=2,
             is_available_for_hire=True,
         )
@@ -182,7 +182,7 @@ class Command(BaseCommand):
             ("Docker", "DEVOPS", 70, "docker", False),
             ("Git & GitHub", "TOOLS", 90, "git", True),
             ("Figma", "TOOLS", 72, "figma", False),
-            ("Problem Solving", "SOFT_SKILL", 88, "", False),
+            ("Problem Solving", "SOFT_SKILL", 88, "", True),
             ("Technical Writing", "SOFT_SKILL", 84, "", False),
         ]
         skills = []
@@ -251,10 +251,10 @@ class Command(BaseCommand):
             return [by_name[n] for n in names if n in by_name]
 
         specs = [
-            dict(
-                title="DevFolio — Portfolio & Blog Platform",
-                summary="A single-owner portfolio + blog with a full Django REST API and a React dashboard.",
-                description=(
+            {
+                "title": "DevFolio — Portfolio & Blog Platform",
+                "summary": "A single-owner portfolio + blog with a full Django REST API and a React dashboard.",
+                "description": (
                     "DevFolio is a full-stack portfolio and blog platform. The Django REST "
                     "backend exposes a clean, versioned API with JWT auth, custom permissions, "
                     "filtering, throttling and a non-double-counting view counter. The React "
@@ -262,52 +262,52 @@ class Command(BaseCommand):
                     "token refresh, optimistic likes, and a protected owner dashboard for full "
                     "CRUD over posts, projects, skills and comments."
                 ),
-                category="WEB", is_featured=True,
-                live_url="https://example.com", github_url="https://github.com/your-username/devfolio",
-                completed_date=datetime.date(2025, 7, 20),
-                tech=pick("React", "Django REST Framework", "PostgreSQL", "Tailwind CSS"),
-            ),
-            dict(
-                title="ShopStack — Headless E-commerce API",
-                summary="A REST API for a small store: catalog, cart, orders and Stripe-style checkout.",
-                description=(
+                "category": "WEB", "is_featured": True,
+                "live_url": "https://example.com", "github_url": "https://github.com/your-username/devfolio",
+                "completed_date": datetime.date(2025, 7, 20),
+                "tech": pick("React", "Django REST Framework", "PostgreSQL", "Tailwind CSS"),
+            },
+            {
+                "title": "ShopStack — Headless E-commerce API",
+                "summary": "A REST API for a small store: catalog, cart, orders and Stripe-style checkout.",
+                "description": (
                     "ShopStack is a headless commerce backend. It models products, variants, "
                     "carts and orders, with token auth for staff and a public catalog with "
                     "search and faceted filtering. Includes stock reservation on checkout and "
                     "a small analytics endpoint powered by ORM aggregation."
                 ),
-                category="API", is_featured=True,
-                live_url="", github_url="https://github.com/your-username/shopstack",
-                completed_date=datetime.date(2025, 4, 10),
-                tech=pick("Django", "Django REST Framework", "PostgreSQL", "Redis", "Docker"),
-            ),
-            dict(
-                title="TaskFlow — Team Kanban Board",
-                summary="A drag-and-drop Kanban app with real-time-ish updates and role-based boards.",
-                description=(
+                "category": "API", "is_featured": True,
+                "live_url": "", "github_url": "https://github.com/your-username/shopstack",
+                "completed_date": datetime.date(2025, 4, 10),
+                "tech": pick("Django", "Django REST Framework", "PostgreSQL", "Redis", "Docker"),
+            },
+            {
+                "title": "TaskFlow — Team Kanban Board",
+                "summary": "A drag-and-drop Kanban app with real-time-ish updates and role-based boards.",
+                "description": (
                     "TaskFlow is a Kanban board for small teams. Cards move across columns with "
                     "drag and drop, changes sync through polling with React Query, and boards "
                     "support member roles. Built to practice optimistic UI and cache "
                     "invalidation patterns on the frontend."
                 ),
-                category="WEB", is_featured=True,
-                live_url="https://example.com", github_url="https://github.com/your-username/taskflow",
-                completed_date=datetime.date(2025, 1, 15),
-                tech=pick("React", "TypeScript", "Tailwind CSS", "Node.js"),
-            ),
-            dict(
-                title="WeatherLens — Forecast Dashboard",
-                summary="A clean weather dashboard with search, saved cities and a 7-day chart.",
-                description=(
+                "category": "WEB", "is_featured": True,
+                "live_url": "https://example.com", "github_url": "https://github.com/your-username/taskflow",
+                "completed_date": datetime.date(2025, 1, 15),
+                "tech": pick("React", "TypeScript", "Tailwind CSS", "Node.js"),
+            },
+            {
+                "title": "WeatherLens — Forecast Dashboard",
+                "summary": "A clean weather dashboard with search, saved cities and a 7-day chart.",
+                "description": (
                     "WeatherLens is a small React dashboard that consumes a public weather API, "
                     "caches results, and renders a 7-day forecast with an accessible chart. It "
                     "was my playground for debouncing, loading/empty/error states and dark mode."
                 ),
-                category="WEB", is_featured=False,
-                live_url="https://example.com", github_url="https://github.com/your-username/weatherlens",
-                completed_date=datetime.date(2024, 11, 2),
-                tech=pick("React", "JavaScript (ES6+)", "Tailwind CSS"),
-            ),
+                "category": "WEB", "is_featured": False,
+                "live_url": "https://example.com", "github_url": "https://github.com/your-username/weatherlens",
+                "completed_date": datetime.date(2024, 11, 2),
+                "tech": pick("React", "JavaScript (ES6+)", "Tailwind CSS"),
+            },
         ]
         for i, spec in enumerate(specs):
             tech = spec.pop("tech")
@@ -344,41 +344,46 @@ class Command(BaseCommand):
     def _posts(self, owner, categories, tags):
         Post.objects.all().delete()
         specs = [
-            dict(
-                title="How I set up JWT authentication in Django REST Framework",
-                cat="Django", tags=["jwt", "drf", "rest-api"],
-                excerpt="A practical walkthrough of wiring up SimpleJWT: login, refresh, logout with blacklisting, and a /me endpoint to restore sessions.",
-                published_days_ago=4,
-                content=JWT_POST,
-            ),
-            dict(
-                title="Why TanStack Query replaced all my useEffect fetching",
-                cat="React", tags=["react-query", "hooks", "rest-api"],
-                excerpt="Manual loading flags and stale data everywhere — here's how React Query cleaned up my data layer and gave me caching for free.",
-                published_days_ago=12,
-                content=RQ_POST,
-            ),
-            dict(
-                title="Custom permissions in DRF: don't trust the frontend",
-                cat="Django", tags=["permissions", "drf", "jwt"],
-                excerpt="Hiding a button is UX, not security. Here's the IsOwnerOrReadOnly permission class that actually protects my write endpoints.",
-                published_days_ago=30,
-                content=PERM_POST,
-            ),
-            dict(
-                title="Building an optimistic like button with React Query",
-                cat="React", tags=["optimistic-ui", "react-query", "tailwind"],
-                excerpt="Instant feedback on a like button, with a clean rollback when the request fails. A small feature that teaches a lot.",
-                published_days_ago=55,
-                content=OPTIMISTIC_POST,
-            ),
-            dict(
-                title="Design tokens with Tailwind: one source of truth",
-                cat="CSS", tags=["tailwind", "beginner"],
-                excerpt="How I keep colors, spacing and radii consistent across a whole app by defining them once in tailwind.config.js.",
-                published_days_ago=None,  # DRAFT
-                content=TOKENS_POST,
-            ),
+            {
+                "title": "How I set up JWT authentication in Django REST Framework",
+                "cat": "Django",
+                "tags": ["jwt", "drf", "rest-api"],
+                "excerpt": "A practical walkthrough of wiring up SimpleJWT: login, refresh, logout with blacklisting, and a /me endpoint to restore sessions.",
+                "published_days_ago": 4,
+                "content": JWT_POST,
+            },
+            {
+                "title": "Why TanStack Query replaced all my useEffect fetching",
+                "cat": "React",
+                "tags": ["react-query", "hooks", "rest-api"],
+                "excerpt": "Manual loading flags and stale data everywhere — here's how React Query cleaned up my data layer and gave me caching for free.",
+                "published_days_ago": 12,
+                "content": RQ_POST,
+            },
+            {
+                "title": "Custom permissions in DRF: don't trust the frontend",
+                "cat": "Django",
+                "tags": ["permissions", "drf", "jwt"],
+                "excerpt": "Hiding a button is UX, not security. Here's the IsOwnerOrReadOnly permission class that actually protects my write endpoints.",
+                "published_days_ago": 30,
+                "content": PERM_POST,
+            },
+            {
+                "title": "Building an optimistic like button with React Query",
+                "cat": "React",
+                "tags": ["optimistic-ui", "react-query", "tailwind"],
+                "excerpt": "Instant feedback on a like button, with a clean rollback when the request fails. A small feature that teaches a lot.",
+                "published_days_ago": 55,
+                "content": OPTIMISTIC_POST,
+            },
+            {
+                "title": "Design tokens with Tailwind: one source of truth",
+                "cat": "CSS",
+                "tags": ["tailwind", "beginner"],
+                "excerpt": "How I keep colors, spacing and radii consistent across a whole app by defining them once in tailwind.config.js.",
+                "published_days_ago": None,  # DRAFT
+                "content": TOKENS_POST,
+            },
         ]
         posts = []
         for i, spec in enumerate(specs):

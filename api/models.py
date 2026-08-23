@@ -107,7 +107,7 @@ class Skill(TimeStampedModel):
     is_featured = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ["display_order", "-proficiency", "name"]
+        ordering = ("display_order", "-proficiency", "name",)
 
     def __str__(self):
         return self.name
@@ -138,7 +138,7 @@ class Experience(TimeStampedModel):
     display_order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ["-start_date", "display_order"]
+        ordering = ("-start_date", "display_order",)
 
     def __str__(self):
         return f"{self.role} @ {self.company}"
@@ -158,7 +158,7 @@ class Education(TimeStampedModel):
     display_order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ["-start_year", "display_order"]
+        ordering = ("-start_year", "display_order",)
         verbose_name_plural = "Education"
 
     def __str__(self):
@@ -194,7 +194,7 @@ class Project(TimeStampedModel):
     display_order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ["display_order", "-completed_date", "-created_at"]
+        ordering = ("display_order", "-completed_date", "-created_at",)
 
     def __str__(self):
         return self.title
@@ -214,7 +214,7 @@ class Category(TimeStampedModel):
     description = models.TextField(blank=True)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ("name",)
         verbose_name_plural = "Categories"
 
     def __str__(self):
@@ -234,7 +234,7 @@ class Tag(TimeStampedModel):
     slug = models.SlugField(max_length=80, unique=True, blank=True)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ("name",)
 
     def __str__(self):
         return self.name
@@ -274,7 +274,7 @@ class Post(TimeStampedModel):
     is_featured = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ["-published_at", "-created_at"]
+        ordering = ("-published_at", "-created_at",)
 
     def __str__(self):
         return self.title
@@ -301,7 +301,7 @@ class PostLike(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ("post", "visitor_id")
+        unique_together = ("post", "visitor_id",)
 
     def __str__(self):
         return f"like:{self.post_id}:{self.visitor_id}"
@@ -326,7 +326,7 @@ class Comment(TimeStampedModel):
     is_approved = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ("-created_at",)
 
     def __str__(self):
         return f"{self.name} on {self.post_id}"
@@ -349,7 +349,7 @@ class ContactMessage(TimeStampedModel):
     is_read = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ("-created_at",)
 
     def __str__(self):
         return f"{self.subject} — {self.name}"

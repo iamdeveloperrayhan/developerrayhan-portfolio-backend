@@ -7,8 +7,8 @@ from .models import (
     ContactMessage,
     Education,
     Experience,
-    PostLike,
     Post,
+    PostLike,
     Profile,
     Project,
     Skill,
@@ -49,7 +49,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ("title", "category", "is_featured", "completed_date", "display_order")
     list_filter = ("category", "is_featured")
     search_fields = ("title", "summary", "description")
-    prepopulated_fields = {"slug": ("title",)}
+    prepopulated_fields = {"slug": ("title",)} # noqa: RUF012
     filter_horizontal = ("tech_stack",)
 
 
@@ -57,14 +57,14 @@ class ProjectAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "slug", "description")
     search_fields = ("name",)
-    prepopulated_fields = {"slug": ("name",)}
+    prepopulated_fields = {"slug": ("name",)} # noqa: RUF012
 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ("name", "slug")
     search_fields = ("name",)
-    prepopulated_fields = {"slug": ("name",)}
+    prepopulated_fields = {"slug": ("name",)} # noqa: RUF012
 
 
 @admin.register(Post)
@@ -72,7 +72,7 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ("title", "category", "status", "is_featured", "views_count", "published_at")
     list_filter = ("status", "is_featured", "category", "tags")
     search_fields = ("title", "excerpt", "content")
-    prepopulated_fields = {"slug": ("title",)}
+    prepopulated_fields = {"slug": ("title",)} # noqa: RUF012
     filter_horizontal = ("tags",)
     readonly_fields = ("views_count", "reading_time", "published_at")
 
@@ -90,7 +90,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ("is_approved", "created_at")
     search_fields = ("name", "email", "content")
     list_editable = ("is_approved",)
-    actions = ["approve_comments"]
+    actions = ("approve_comments")
 
     @admin.action(description="Approve selected comments")
     def approve_comments(self, request, queryset):
