@@ -170,7 +170,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "github_url", "is_featured", "completed_date", "display_order",
             "created_at", "updated_at",
         )
-        read_only_fields = ("slug")
+        read_only_fields = ("slug",)
 
     def validate(self, attrs):
         live = attrs.get("live_url", getattr(self.instance, "live_url", ""))
@@ -191,7 +191,7 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ("id", "name", "slug", "description", "posts_count")
-        read_only_fields = ("slug")
+        read_only_fields = ("slug",)
 
     def get_posts_count(self, obj):
         if hasattr(obj, "published_posts_count"):
@@ -205,7 +205,7 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ("id", "name", "slug", "posts_count")
-        read_only_fields = ("slug")
+        read_only_fields = ("slug",)
 
     def get_posts_count(self, obj):
         if hasattr(obj, "published_posts_count"):
