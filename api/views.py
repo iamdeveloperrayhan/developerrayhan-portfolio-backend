@@ -4,9 +4,9 @@ DRF views for DevFolio.
 Public reads, owner-only writes. Draft posts and unapproved comments are
 filtered out of every public response at the queryset level (S-3).
 """
-import datetime
+import datetime # noqa: I001
 
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db.models import Count, F, Q, Sum
 from django.db.models.deletion import ProtectedError
@@ -40,7 +40,7 @@ from .models import (
 )
 from .pagination import (
     CommentPagination,
-    DefaultPagination,
+    DefaultPagination, #noqa : F401
     MessagePagination,
     PostPagination,
     ProjectPagination,
@@ -83,7 +83,7 @@ class LoginView(TokenObtainPairView):
 
 
 class LogoutView(APIView):
-    permission_classes = [IsOwner]
+    permission_classes = (IsOwner,)
 
     def post(self, request):
         try:
@@ -97,14 +97,14 @@ class LogoutView(APIView):
 
 
 class MeView(APIView):
-    permission_classes = [IsOwner]
+    permission_classes = (IsOwner,)
 
     def get(self, request):
         return Response(UserSerializer(request.user).data)
 
 
 class ChangePasswordView(GenericAPIView):
-    permission_classes = [IsOwner]
+    permission_classes = (IsOwner,)
     serializer_class = ChangePasswordSerializer
 
     def post(self, request):
@@ -119,7 +119,7 @@ class ChangePasswordView(GenericAPIView):
 # Profile (singleton)
 # ---------------------------------------------------------------------------
 class ProfileView(APIView):
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = (IsOwnerOrReadOnly,)
 
     def get(self, request):
         profile = Profile.get_solo()
@@ -148,25 +148,25 @@ class ProfileView(APIView):
 class SkillViewSet(viewsets.ModelViewSet):
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
-    permission_classes = [IsOwnerOrReadOnly]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    permission_classes = (IsOwnerOrReadOnly,)
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
     filterset_class = SkillFilter
-    search_fields = ["name"]
-    ordering_fields = ["display_order", "proficiency", "name"]
-    ordering = ["display_order", "-proficiency"]
+    search_fields = ("name",)
+    ordering_fields = ("display_order", "proficiency", "name",)
+    ordering = ("display_order", "-proficiency",)
 
 
 class ExperienceViewSet(viewsets.ModelViewSet):
     queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
-    permission_classes = [IsOwnerOrReadOnly]
-    ordering = ["-start_date"]
+    permission_classes = (IsOwnerOrReadOnly,)
+    ordering = ("-start_date",)
 
 
 class EducationViewSet(viewsets.ModelViewSet):
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
 # ---------------------------------------------------------------------------
@@ -175,14 +175,14 @@ class EducationViewSet(viewsets.ModelViewSet):
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.prefetch_related("tech_stack").all()
     serializer_class = ProjectSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = (IsOwnerOrReadOnly,)
     lookup_field = "slug"
     pagination_class = ProjectPagination
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
     filterset_class = ProjectFilter
-    search_fields = ["title", "summary", "description"]
-    ordering_fields = ["completed_date", "display_order", "created_at", "title"]
-    ordering = ["display_order", "-completed_date"]
+    search_fields = ("title", "summary", "description",)
+    ordering_fields = ("completed_date", "display_order", "created_at", "title",)
+    ordering = ("display_order", "-completed_date",)
 
 
 # ---------------------------------------------------------------------------
@@ -194,7 +194,9 @@ class _PublishedCountMixin:
     def get_queryset(self):
         return super().get_queryset().annotate(
             published_posts_count=Count(
-                "posts", filter=Q(posts__status=Post.Status.PUBLISHED), distinct=True
+                "posts",
+                filter=Q(posts__status=Post.Status.PUBLISHED),
+                distinct=True
             )
         )
 
@@ -211,7 +213,7 @@ class _PublishedCountMixin:
 class CategoryViewSet(_PublishedCountMixin, viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = (IsOwnerOrReadOnly,)
     lookup_field = "slug"
     pagination_class = None
 
@@ -219,7 +221,7 @@ class CategoryViewSet(_PublishedCountMixin, viewsets.ModelViewSet):
 class TagViewSet(_PublishedCountMixin, viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = (IsOwnerOrReadOnly,)
     lookup_field = "slug"
     pagination_class = None
 
@@ -228,14 +230,14 @@ class TagViewSet(_PublishedCountMixin, viewsets.ModelViewSet):
 # Blog: Posts
 # ---------------------------------------------------------------------------
 class PostViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = (IsOwnerOrReadOnly,)
     lookup_field = "slug"
     pagination_class = PostPagination
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
     filterset_class = PostFilter
-    search_fields = ["title", "excerpt", "content"]
-    ordering_fields = ["published_at", "views_count", "likes_count", "title", "created_at"]
-    ordering = ["-published_at"]
+    search_fields = ("title", "excerpt", "content",)
+    ordering_fields = ("published_at", "views_count", "likes_count", "title", "created_at",)
+    ordering = ("-published_at",)
 
     def get_queryset(self):
         qs = (
@@ -350,9 +352,9 @@ class PostViewSet(viewsets.ModelViewSet):
 class CommentModerationViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.select_related("post").all()
     serializer_class = CommentModerationSerializer
-    permission_classes = [IsOwner]
+    permission_classes = (IsOwner,)
     pagination_class = CommentPagination
-    http_method_names = ["get", "patch", "delete", "head", "options"]
+    http_method_names = ("get", "patch", "delete", "head", "options",)
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -372,7 +374,7 @@ class CommentModerationViewSet(viewsets.ModelViewSet):
 class ContactMessageViewSet(viewsets.ModelViewSet):
     queryset = ContactMessage.objects.all()
     pagination_class = MessagePagination
-    http_method_names = ["get", "post", "patch", "delete", "head", "options"]
+    http_method_names = ("get", "post", "patch", "delete", "head", "options",)
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -410,7 +412,7 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
 # Dashboard stats (owner only) — ORM aggregation, no Python loops over rows
 # ---------------------------------------------------------------------------
 class DashboardStatsView(APIView):
-    permission_classes = [IsOwner]
+    permission_classes = (IsOwner,)
 
     def get(self, request):
         posts = Post.objects.all()
