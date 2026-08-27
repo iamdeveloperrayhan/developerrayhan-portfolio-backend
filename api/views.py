@@ -96,7 +96,7 @@ class LogoutView(APIView):
         return Response(status=status.HTTP_205_RESET_CONTENT)
 
 
-class MeView(APIView):
+class MeView(APIView): 
     permission_classes = (IsOwner,)
 
     def get(self, request):
@@ -195,7 +195,7 @@ class _PublishedCountMixin:
         return super().get_queryset().annotate(
             published_posts_count=Count(
                 "posts",
-                filter=Q(posts__status=Post.Status.PUBLISHED),
+                filter=Q(Post.Status.PUBLISHED),
                 distinct=True
             )
         )

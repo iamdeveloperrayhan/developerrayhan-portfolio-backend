@@ -31,9 +31,9 @@ from api.models import (
     Tag,
 )
 
-OWNER_USERNAME = "owner"
-OWNER_PASSWORD = "DevFolioDemo!2026"
-OWNER_EMAIL = "owner@devfolio.local"
+OWNER_USERNAME = "iamdeveloperrayhan"
+OWNER_PASSWORD = "iamDeveloperRayhan!2026"
+OWNER_EMAIL = "iamdeveloperrayhan@gmail.com"
 
 
 def _font(size):
@@ -136,7 +136,7 @@ class Command(BaseCommand):
         if Profile.objects.exists():
             Profile.objects.all().delete()
         p = Profile(
-            full_name="Rayhan Kabir",
+            full_name="Developer Rayhan",
             headline="Full-Stack Developer — React & Django REST",
             bio=(
                 "I'm a full-stack developer who enjoys turning messy problems into "
@@ -149,17 +149,17 @@ class Command(BaseCommand):
                 "schema to the pixel. When I'm not coding I'm usually writing about "
                 "what I learned so the next person hits fewer walls than I did."
             ),
-            email="hello@iamdeveloperrayhan.dev",
-            phone="+880 1700 000000",
-            location="Dhaka, Bangladesh",
+            email="iamdeveloperrayhan@gmail.com",
+            phone="+880 1329 905035",
+            location="Faridpur, Dhaka, Bangladesh",
             github_url="https://github.com/imadeveloperrayhan",
             linkedin_url="https://linkedin.com/in/iamdeveloperrayhan",
-            x_url="https://x.com/iamdeveloperrayhan",
+            x_url="https://x.com/devloperrayhan",
             website_url="https://iamdeveloperrayhan.dev",
             years_of_experience=2,
             is_available_for_hire=True,
         )
-        p.avatar.save("avatar.jpg", gradient_image("RK", size=(600, 600),
+        p.avatar.save("avatar.jpg", gradient_image("DR", size=(600, 600),
                       c1=(99, 102, 241), c2=(236, 72, 153)), save=False)
         p.resume.save("resume.pdf", ContentFile(_tiny_pdf()), save=False)
         p.save()
@@ -235,7 +235,7 @@ class Command(BaseCommand):
             display_order=0,
         )
         Education.objects.create(
-            institution="Programming Hero", degree="Full-Stack Web Development",
+            institution="Ostad", degree="Full-Stack Web Development With Python, Django And React",
             field_of_study="React + Django REST Framework (Batch-9)",
             start_year=2024, end_year=2025, grade="",
             description="Intensive project-based course covering modern full-stack development.",
@@ -263,7 +263,7 @@ class Command(BaseCommand):
                     "CRUD over posts, projects, skills and comments."
                 ),
                 "category": "WEB", "is_featured": True,
-                "live_url": "https://example.com", "github_url": "https://github.com/your-username/devfolio",
+                "live_url": "https://example.com", "github_url": "https://github.com/iamdeveloperrayhan",
                 "completed_date": datetime.date(2025, 7, 20),
                 "tech": pick("React", "Django REST Framework", "PostgreSQL", "Tailwind CSS"),
             },
