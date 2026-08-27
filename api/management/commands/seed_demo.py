@@ -263,50 +263,50 @@ class Command(BaseCommand):
                     "CRUD over posts, projects, skills and comments."
                 ),
                 "category": "WEB", "is_featured": True,
-                "live_url": "https://example.com", "github_url": "https://github.com/iamdeveloperrayhan",
+                "live_url": "", "github_url": "https://github.com/iamdeveloperrayhan",
                 "completed_date": datetime.date(2025, 7, 20),
                 "tech": pick("React", "Django REST Framework", "PostgreSQL", "Tailwind CSS"),
             },
             {
-                "title": "ShopStack — Headless E-commerce API",
-                "summary": "A REST API for a small store: catalog, cart, orders and Stripe-style checkout.",
+                "title": "Django — eCommerce Store",
+                "summary": "A full-featured Django eCommerce web application with user authentication, product catalog, shopping cart, order management, and responsive design.",
                 "description": (
-                    "ShopStack is a headless commerce backend. It models products, variants, "
-                    "carts and orders, with token auth for staff and a public catalog with "
-                    "search and faceted filtering. Includes stock reservation on checkout and "
-                    "a small analytics endpoint powered by ORM aggregation."
+                    "Welcome to my Django E-Commerce Website. "
+                    "This project is a complete Full Stack E-Commerce Web Application built using the Django Framework with a modern, responsive, and user-friendly interface. "
+                    "The application allows customers to browse products, add items to their shopping cart, place secure orders, complete online payments through Stripe, and manage their accounts with ease. "
+                    "The project follows a modular Django architecture by separating functionalities into multiple reusable apps, making the code clean, scalable, and easy to maintain. []"
+                ),
+                "category": "eCommerce", "is_featured": True,
+                "live_url": "", "github_url": "https://github.com/iamdeveloperrayhan/django-ecommerce-store",
+                "completed_date": datetime.date(2024, 11, 4),
+                "tech": pick("Python","Django", "React", "Pillow", "Google Fonts", "Line Icons", "Font Awesome", "Stripe", "PostgreSQL", "HTML", "CSS", "JavaScript", "Bootstrap", "jQuery", "Tailwind"),
+            },
+            {
+                "title": "Hospital Appointment Management APIs",
+                "summary": "A RESTful API for managing hospital appointments, patients, doctors, schedules, and healthcare services built with Django REST Framework.",
+                "description": (
+                    "Hospital Appointment Management API is a production-ready backend system built with Django REST Framework. "
+                    "The project provides a complete RESTful API for managing hospital appointments, doctors, patients, billing, authentication, and dashboard analytics. "
+                    "It follows secure authentication using JWT and role-based authorization for Admin, Doctor, and Patient. "
+                    "The architecture is modular, clean, scalable, and follows REST API best practices."
                 ),
                 "category": "API", "is_featured": True,
-                "live_url": "", "github_url": "https://github.com/your-username/shopstack",
-                "completed_date": datetime.date(2025, 4, 10),
-                "tech": pick("Django", "Django REST Framework", "PostgreSQL", "Redis", "Docker"),
+                "live_url": "", "github_url": "https://github.com/iamdeveloperrayhan/hospital-appointment-management-api",
+                "completed_date": datetime.date(2026, 7, 21),
+                "tech": pick("Python", "Django", "Django REST Framework", "PostgreSQL", ),
             },
             {
-                "title": "TaskFlow — Team Kanban Board",
-                "summary": "A drag-and-drop Kanban app with real-time-ish updates and role-based boards.",
+                "title": "Nexus Explorer Character Intelligence Dashboard",
+                "summary": "A read-only React dashboard for the Rick and Morty API — built with Hooks, React Router, Context API, and TanStack React Query. Live search, filters, watchlist, and character compare, all in a custom design system.",
                 "description": (
-                    "TaskFlow is a Kanban board for small teams. Cards move across columns with "
-                    "drag and drop, changes sync through polling with React Query, and boards "
-                    "support member roles. Built to practice optimistic UI and cache "
-                    "invalidation patterns on the frontend."
+                    "A read-only, multi-page React dashboard built on top of the Rick and Morty API — featuring live search, filtering, "
+                    "a personal watchlist, side-by-side comparisons, and a fully custom design system. "
+                    "Built as a React Batch-9 · Module-27 assignment focused on Hooks, React Router, Context API, and TanStack React Query."
                 ),
-                "category": "WEB", "is_featured": True,
-                "live_url": "https://example.com", "github_url": "https://github.com/your-username/taskflow",
-                "completed_date": datetime.date(2025, 1, 15),
-                "tech": pick("React", "TypeScript", "Tailwind CSS", "Node.js"),
-            },
-            {
-                "title": "WeatherLens — Forecast Dashboard",
-                "summary": "A clean weather dashboard with search, saved cities and a 7-day chart.",
-                "description": (
-                    "WeatherLens is a small React dashboard that consumes a public weather API, "
-                    "caches results, and renders a 7-day forecast with an accessible chart. It "
-                    "was my playground for debouncing, loading/empty/error states and dark mode."
-                ),
-                "category": "WEB", "is_featured": False,
-                "live_url": "https://example.com", "github_url": "https://github.com/your-username/weatherlens",
-                "completed_date": datetime.date(2024, 11, 2),
-                "tech": pick("React", "JavaScript (ES6+)", "Tailwind CSS"),
+                "category": "Frontend", "is_featured": False,
+                "live_url": "", "github_url": "https://github.com/iamdeveloperrayhan/Nexus-Explorer-Character-Intelligence-Dashboard",
+                "completed_date": datetime.date(2026, 8, 7),
+                "tech": pick("React","vite", "JavaScript (ES6+)", "Tailwind CSS"),
             },
         ]
         for i, spec in enumerate(specs):
@@ -421,7 +421,7 @@ class Command(BaseCommand):
             is_approved=True,
         )
         Comment.objects.create(
-            post=p0, name="Rayhan Kabir", email=OWNER_EMAIL,
+            post=p0, name="Developer Rayhan", email=OWNER_EMAIL,
             content="Glad it helped! The /me endpoint is the part people usually miss.",
             parent=c1, is_approved=True,
         )
